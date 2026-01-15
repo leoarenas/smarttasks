@@ -22,35 +22,23 @@ const Landing = () => {
             </header>
 
             {/* Hero Section */}
-            <section className="max-w-7xl mx-auto px-6 py-16 md:py-24">
-                <div className="grid lg:grid-cols-2 gap-12 items-center">
-                    <div className="space-y-8">
-                        <h2 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground leading-tight">
-                            ¿Hasta cuándo vas a sostener una empresa sin roles claros ni procesos definidos?
-                        </h2>
-                        <p className="text-lg text-primary font-medium">
-                            Profesionaliza tu operación con SmartTasks, el sistema que ordena roles, procesos y delegación.
-                        </p>
-                        <p className="text-muted-foreground">
-                            <span className="font-medium text-foreground">Reduce tu dependencia</span> operativa del día a día · 
-                            <span className="font-medium text-foreground"> Delega con claridad</span> sin perder el control · 
-                            <span className="font-medium text-foreground"> Haz que tu equipo funcione</span> con criterios y estándares compartidos
-                        </p>
-                        <div className="flex flex-col sm:flex-row gap-4">
-                            <Link to="/register">
-                                <Button size="lg" className="w-full sm:w-auto text-base px-8" data-testid="hero-cta-btn">
-                                    Comenzar ahora - Es gratis
-                                    <ArrowRight className="ml-2 h-5 w-5" />
-                                </Button>
-                            </Link>
-                        </div>
-                    </div>
-                    <div className="relative">
-                        <img 
-                            src="https://images.unsplash.com/photo-1758598306980-c47a94c6708c?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzR8MHwxfHNlYXJjaHwyfHxidXNpbmVzcyUyMG93bmVyJTIwY29uZmlkZW50JTIwb2ZmaWNlfGVufDB8fHx8MTc2ODUwMDA0MHww&ixlib=rb-4.1.0&q=85&w=800"
-                            alt="Dueña de negocio confiada"
-                            className="rounded-sm shadow-lg w-full"
-                        />
+            <section className="max-w-4xl mx-auto px-6 py-16 md:py-24">
+                <div className="space-y-8 text-center">
+                    <h2 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground leading-tight">
+                        ¿Hasta cuándo vas a sostener una empresa sin roles claros ni procesos definidos?
+                    </h2>
+                    <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                        <span className="font-medium text-foreground">Reduce tu dependencia</span> operativa del día a día · 
+                        <span className="font-medium text-foreground"> Delega con claridad</span> sin perder el control · 
+                        <span className="font-medium text-foreground"> Haz que tu equipo funcione</span> con criterios y estándares compartidos
+                    </p>
+                    <div className="flex justify-center">
+                        <Link to="/register">
+                            <Button size="lg" className="text-base px-8" data-testid="hero-cta-btn">
+                                Comenzar ahora - Es gratis
+                                <ArrowRight className="ml-2 h-5 w-5" />
+                            </Button>
+                        </Link>
                     </div>
                 </div>
             </section>
