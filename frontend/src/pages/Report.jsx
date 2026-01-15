@@ -224,7 +224,7 @@ const Report = () => {
                                             <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Tarea</th>
                                             <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Frecuencia</th>
                                             <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Duración</th>
-                                            <th className="px-4 py-3 text-center text-sm font-medium text-muted-foreground">I/R/E</th>
+                                            <th className="px-4 py-3 text-center text-sm font-medium text-muted-foreground">Impacto/Riesgo/Esfuerzo</th>
                                             <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Decisión</th>
                                             <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Perfil Sugerido</th>
                                         </tr>
