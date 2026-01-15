@@ -279,6 +279,9 @@ const Dashboard = () => {
                                     <DialogTitle className="font-heading">
                                         {editingTask ? 'Editar Tarea' : 'Nueva Tarea'}
                                     </DialogTitle>
+                                    <DialogDescription>
+                                        {editingTask ? 'Modifica los datos de la tarea' : 'Agrega una nueva tarea para analizar'}
+                                    </DialogDescription>
                                 </DialogHeader>
                                 <form onSubmit={handleSubmit} className="space-y-4">
                                     <div className="space-y-2">
