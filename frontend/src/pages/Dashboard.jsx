@@ -11,7 +11,8 @@ import {
     DialogTitle, 
     DialogTrigger,
     DialogFooter,
-    DialogClose
+    DialogClose,
+    DialogDescription
 } from '../components/ui/dialog';
 import {
     AlertDialog,
@@ -23,13 +24,12 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from '../components/ui/alert-dialog';
-import { DialogDescription } from '../components/ui/dialog';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Textarea } from '../components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Slider } from '../components/ui/slider';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '../components/ui/collapsible';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../components/ui/tooltip';
 import { toast } from 'sonner';
 import { 
     Plus, 
@@ -40,12 +40,99 @@ import {
     Pencil, 
     Trash2, 
     Sparkles,
-    ChevronDown,
-    ChevronUp,
-    Brain
+    Brain,
+    HelpCircle,
+    X,
+    Lightbulb
 } from 'lucide-react';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+
+// Onboarding questions from the guide
+const ONBOARDING_QUESTIONS = [
+    "¿Cuáles son tus 5 tareas que más tiempo consumen?",
+    "¿Qué tareas impactan más en ingresos o clientes?",
+    "¿Qué tareas te cansan o interrumpen tu foco diario?",
+    "¿Qué tareas fallan o generan quejas?",
+    "¿Qué tareas creés que solo podés hacer vos?",
+    "¿Cuáles tienen pasos claros o podrían documentarse fácilmente?",
+    "¿Quién del equipo tiene 2-6 hs/semanales libres y conocimientos afines?",
+    "¿Qué tareas podrían hacer proveedores o servicios externos?"
+];
+
+// Help tooltips for evaluation fields
+const FIELD_HELP = {
+    impact: {
+        title: "Impacto",
+        description: "Cuánto contribuye la tarea a los resultados del negocio (ventas, clientes, eficiencia).",
+        levels: [
+            { value: "1-2", label: "Muy bajo", desc: "No cambia nada importante. Ej: Reunión sin decisiones" },
+            { value: "3", label: "Medio", desc: "Afecta parcialmente un proceso. Ej: Reporte interno" },
+            { value: "4-5", label: "Crítico", desc: "Determina resultados clave. Ej: Negociación con clientes estratégicos" }
+        ],
+        rule: "Si impacta en ingresos o clientes, su impacto ≥4"
+    },
+    risk: {
+        title: "Riesgo",
+        description: "Qué tan grave sería si la tarea se hace mal o no se hace.",
+        levels: [
+            { value: "1-2", label: "Muy bajo", desc: "Error sin consecuencias. Ej: Error de formato" },
+            { value: "3", label: "Medio", desc: "Re-trabajo o molestia menor. Ej: Error en pedido" },
+            { value: "4-5", label: "Crítico", desc: "Riesgo legal o financiero. Ej: Enviar info confidencial por error" }
+        ],
+        rule: "Si involucra dinero, datos personales o información estratégica, su riesgo ≥4"
+    },
+    effort: {
+        title: "Esfuerzo del dueño",
+        description: "Cuánto tiempo y energía mental te exige realizarla o decidir sobre ella.",
+        levels: [
+            { value: "1-2", label: "Muy bajo", desc: "Demora minutos. Ej: Aprobar mensaje estándar" },
+            { value: "3", label: "Medio", desc: "30-60 min. de concentración. Ej: Revisar presupuesto" },
+            { value: "4-5", label: "Crítico", desc: "Horas, decisiones críticas. Ej: Planificación estratégica" }
+        ],
+        rule: "Si te interrumpe o te saca del foco varias veces/semana, esfuerzo ≥3"
+    },
+    confidentiality: {
+        title: "Confidencialidad",
+        description: "Cuán sensible es la información que maneja la tarea y qué controles necesita para ser delegada.",
+        levels: [
+            { value: "Baja", label: "Baja", desc: "La información no tiene impacto si se difunde. Ej: Publicar en redes sociales" },
+            { value: "Media", label: "Media", desc: "Datos internos no críticos. Ej: Reporte de ventas, listas de precios" },
+            { value: "Alta", label: "Alta", desc: "Datos personales, financieros o estratégicos. Ej: Nóminas, contratos, accesos" }
+        ],
+        rule: "Si involucra dinero, datos personales, accesos o info estratégica, confidencialidad ≥ Media"
+    }
+};
+
+const HelpTooltip = ({ field }) => {
+    const help = FIELD_HELP[field];
+    return (
+        <TooltipProvider>
+            <Tooltip delayDuration={0}>
+                <TooltipTrigger asChild>
+                    <button type="button" className="ml-1 text-muted-foreground hover:text-foreground">
+                        <HelpCircle className="h-4 w-4" />
+                    </button>
+                </TooltipTrigger>
+                <TooltipContent side="right" className="max-w-sm p-4">
+                    <div className="space-y-2">
+                        <p className="font-semibold">{help.title}</p>
+                        <p className="text-sm text-muted-foreground">{help.description}</p>
+                        <div className="space-y-1 text-xs">
+                            {help.levels.map((level, i) => (
+                                <div key={i} className="flex gap-2">
+                                    <span className="font-medium text-primary">{level.value}:</span>
+                                    <span>{level.desc}</span>
+                                </div>
+                            ))}
+                        </div>
+                        <p className="text-xs font-medium text-primary mt-2">Regla: {help.rule}</p>
+                    </div>
+                </TooltipContent>
+            </Tooltip>
+        </TooltipProvider>
+    );
+};
 
 const Dashboard = () => {
     const { user, logout } = useAuth();
@@ -58,22 +145,27 @@ const Dashboard = () => {
     const [editingTask, setEditingTask] = useState(null);
     const [analyzing, setAnalyzing] = useState(null);
     const [analyzingAll, setAnalyzingAll] = useState(false);
-    const [advancedOpen, setAdvancedOpen] = useState(false);
+    const [showOnboarding, setShowOnboarding] = useState(false);
     
-    // Form state
+    // Form state with default values
     const [formData, setFormData] = useState({
         name: '',
         description: '',
         frequency: '',
         duration: '',
-        impact: null,
-        risk: null,
-        effort: null,
-        confidentiality: null
+        impact: 1,
+        risk: 1,
+        effort: 1,
+        confidentiality: 'Baja'
     });
 
     useEffect(() => {
         fetchTasks();
+        // Show onboarding on first load if no tasks
+        const hasSeenOnboarding = localStorage.getItem('smarttasks_onboarding_seen');
+        if (!hasSeenOnboarding) {
+            setShowOnboarding(true);
+        }
     }, []);
 
     const fetchTasks = async () => {
@@ -93,13 +185,12 @@ const Dashboard = () => {
             description: '',
             frequency: '',
             duration: '',
-            impact: null,
-            risk: null,
-            effort: null,
-            confidentiality: null
+            impact: 1,
+            risk: 1,
+            effort: 1,
+            confidentiality: 'Baja'
         });
         setEditingTask(null);
-        setAdvancedOpen(false);
     };
 
     const handleSubmit = async (e) => {
@@ -128,14 +219,11 @@ const Dashboard = () => {
             description: task.description,
             frequency: task.frequency,
             duration: task.duration,
-            impact: task.impact,
-            risk: task.risk,
-            effort: task.effort,
-            confidentiality: task.confidentiality
+            impact: task.impact || 1,
+            risk: task.risk || 1,
+            effort: task.effort || 1,
+            confidentiality: task.confidentiality || 'Baja'
         });
-        if (task.impact || task.risk || task.effort || task.confidentiality) {
-            setAdvancedOpen(true);
-        }
         setDialogOpen(true);
     };
 
@@ -183,6 +271,11 @@ const Dashboard = () => {
     const handleLogout = () => {
         logout();
         navigate('/');
+    };
+
+    const dismissOnboarding = () => {
+        setShowOnboarding(false);
+        localStorage.setItem('smarttasks_onboarding_seen', 'true');
     };
 
     const getDecisionBadge = (decision) => {
@@ -235,6 +328,43 @@ const Dashboard = () => {
 
             {/* Main Content */}
             <main className="max-w-7xl mx-auto px-6 py-8">
+                {/* Onboarding Card */}
+                {showOnboarding && (
+                    <Card className="mb-8 border-primary/20 bg-primary/5 animate-fadeIn">
+                        <CardHeader className="pb-2">
+                            <div className="flex items-start justify-between">
+                                <div className="flex items-center gap-2">
+                                    <Lightbulb className="h-5 w-5 text-primary" />
+                                    <CardTitle className="font-heading text-lg">Guía para identificar tus tareas</CardTitle>
+                                </div>
+                                <Button variant="ghost" size="sm" onClick={dismissOnboarding} data-testid="close-onboarding">
+                                    <X className="h-4 w-4" />
+                                </Button>
+                            </div>
+                        </CardHeader>
+                        <CardContent>
+                            <p className="text-sm text-muted-foreground mb-4">
+                                Responde estas preguntas para identificar las tareas que más impactan tu tiempo:
+                            </p>
+                            <div className="grid md:grid-cols-2 gap-3">
+                                {ONBOARDING_QUESTIONS.map((question, index) => (
+                                    <div key={index} className="flex items-start gap-2 text-sm">
+                                        <span className="flex-shrink-0 w-5 h-5 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-medium">
+                                            {index + 1}
+                                        </span>
+                                        <span>{question}</span>
+                                    </div>
+                                ))}
+                            </div>
+                            <div className="mt-4 pt-4 border-t border-border">
+                                <p className="text-xs text-muted-foreground">
+                                    <strong>Tip:</strong> Revisá tus correos, WhatsApp y agenda de las últimas 3 semanas para recordar todas las tareas que te tomaron tiempo.
+                                </p>
+                            </div>
+                        </CardContent>
+                    </Card>
+                )}
+
                 {/* Page Header */}
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
                     <div>
@@ -244,6 +374,15 @@ const Dashboard = () => {
                         </p>
                     </div>
                     <div className="flex gap-3">
+                        <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => setShowOnboarding(!showOnboarding)}
+                            data-testid="toggle-onboarding-btn"
+                        >
+                            <Lightbulb className="h-4 w-4 mr-2" />
+                            Ayuda
+                        </Button>
                         {tasks.length > 0 && (
                             <Button 
                                 variant="outline" 
@@ -274,7 +413,7 @@ const Dashboard = () => {
                                     Agregar Tarea
                                 </Button>
                             </DialogTrigger>
-                            <DialogContent className="sm:max-w-lg">
+                            <DialogContent className="sm:max-w-xl max-h-[90vh] overflow-y-auto">
                                 <DialogHeader>
                                     <DialogTitle className="font-heading">
                                         {editingTask ? 'Editar Tarea' : 'Nueva Tarea'}
@@ -302,7 +441,7 @@ const Dashboard = () => {
                                             value={formData.description}
                                             onChange={(e) => setFormData({...formData, description: e.target.value})}
                                             placeholder="Describe qué implica esta tarea, cómo se realiza actualmente..."
-                                            rows={4}
+                                            rows={3}
                                             required
                                             data-testid="task-description-input"
                                         />
@@ -339,76 +478,136 @@ const Dashboard = () => {
                                         </div>
                                     </div>
 
-                                    {/* Advanced Options */}
-                                    <Collapsible open={advancedOpen} onOpenChange={setAdvancedOpen}>
-                                        <CollapsibleTrigger asChild>
-                                            <Button 
-                                                type="button" 
-                                                variant="ghost" 
-                                                className="w-full justify-between text-muted-foreground"
-                                            >
-                                                Opciones avanzadas (opcional)
-                                                {advancedOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-                                            </Button>
-                                        </CollapsibleTrigger>
-                                        <CollapsibleContent className="space-y-4 pt-4">
-                                            <div className="space-y-3">
-                                                <div className="flex justify-between items-center">
-                                                    <Label>Impacto: {formData.impact || '-'}</Label>
-                                                </div>
+                                    {/* Evaluation Fields - Always visible */}
+                                    <div className="border-t border-border pt-4 mt-4">
+                                        <p className="text-sm font-medium text-muted-foreground mb-4">Evaluación de la tarea</p>
+                                        
+                                        {/* Impact */}
+                                        <div className="space-y-3 mb-4">
+                                            <div className="flex items-center">
+                                                <Label>Impacto: {formData.impact}</Label>
+                                                <HelpTooltip field="impact" />
+                                            </div>
+                                            <div className="flex items-center gap-3">
                                                 <Slider
-                                                    value={formData.impact ? [formData.impact] : [3]}
+                                                    value={[formData.impact]}
                                                     onValueChange={(value) => setFormData({...formData, impact: value[0]})}
                                                     min={1}
                                                     max={5}
                                                     step={1}
+                                                    className="flex-1"
                                                     data-testid="task-impact-slider"
                                                 />
-                                            </div>
-                                            <div className="space-y-3">
-                                                <div className="flex justify-between items-center">
-                                                    <Label>Riesgo: {formData.risk || '-'}</Label>
+                                                <div className="flex gap-1">
+                                                    {[1,2,3,4,5].map(n => (
+                                                        <button
+                                                            key={n}
+                                                            type="button"
+                                                            onClick={() => setFormData({...formData, impact: n})}
+                                                            className={`w-7 h-7 rounded text-xs font-medium transition-colors ${
+                                                                formData.impact === n 
+                                                                    ? 'bg-primary text-primary-foreground' 
+                                                                    : 'bg-muted hover:bg-muted/80'
+                                                            }`}
+                                                        >
+                                                            {n}
+                                                        </button>
+                                                    ))}
                                                 </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Risk */}
+                                        <div className="space-y-3 mb-4">
+                                            <div className="flex items-center">
+                                                <Label>Riesgo: {formData.risk}</Label>
+                                                <HelpTooltip field="risk" />
+                                            </div>
+                                            <div className="flex items-center gap-3">
                                                 <Slider
-                                                    value={formData.risk ? [formData.risk] : [3]}
+                                                    value={[formData.risk]}
                                                     onValueChange={(value) => setFormData({...formData, risk: value[0]})}
                                                     min={1}
                                                     max={5}
                                                     step={1}
+                                                    className="flex-1"
                                                     data-testid="task-risk-slider"
                                                 />
-                                            </div>
-                                            <div className="space-y-3">
-                                                <div className="flex justify-between items-center">
-                                                    <Label>Esfuerzo del dueño: {formData.effort || '-'}</Label>
+                                                <div className="flex gap-1">
+                                                    {[1,2,3,4,5].map(n => (
+                                                        <button
+                                                            key={n}
+                                                            type="button"
+                                                            onClick={() => setFormData({...formData, risk: n})}
+                                                            className={`w-7 h-7 rounded text-xs font-medium transition-colors ${
+                                                                formData.risk === n 
+                                                                    ? 'bg-primary text-primary-foreground' 
+                                                                    : 'bg-muted hover:bg-muted/80'
+                                                            }`}
+                                                        >
+                                                            {n}
+                                                        </button>
+                                                    ))}
                                                 </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Effort */}
+                                        <div className="space-y-3 mb-4">
+                                            <div className="flex items-center">
+                                                <Label>Esfuerzo del dueño: {formData.effort}</Label>
+                                                <HelpTooltip field="effort" />
+                                            </div>
+                                            <div className="flex items-center gap-3">
                                                 <Slider
-                                                    value={formData.effort ? [formData.effort] : [3]}
+                                                    value={[formData.effort]}
                                                     onValueChange={(value) => setFormData({...formData, effort: value[0]})}
                                                     min={1}
                                                     max={5}
                                                     step={1}
+                                                    className="flex-1"
                                                     data-testid="task-effort-slider"
                                                 />
+                                                <div className="flex gap-1">
+                                                    {[1,2,3,4,5].map(n => (
+                                                        <button
+                                                            key={n}
+                                                            type="button"
+                                                            onClick={() => setFormData({...formData, effort: n})}
+                                                            className={`w-7 h-7 rounded text-xs font-medium transition-colors ${
+                                                                formData.effort === n 
+                                                                    ? 'bg-primary text-primary-foreground' 
+                                                                    : 'bg-muted hover:bg-muted/80'
+                                                            }`}
+                                                        >
+                                                            {n}
+                                                        </button>
+                                                    ))}
+                                                </div>
                                             </div>
-                                            <div className="space-y-2">
+                                        </div>
+
+                                        {/* Confidentiality */}
+                                        <div className="space-y-2">
+                                            <div className="flex items-center">
                                                 <Label>Confidencialidad</Label>
-                                                <Select 
-                                                    value={formData.confidentiality || ''} 
-                                                    onValueChange={(value) => setFormData({...formData, confidentiality: value})}
-                                                >
-                                                    <SelectTrigger data-testid="task-confidentiality-select">
-                                                        <SelectValue placeholder="Selecciona" />
-                                                    </SelectTrigger>
-                                                    <SelectContent>
-                                                        <SelectItem value="Baja">Baja</SelectItem>
-                                                        <SelectItem value="Media">Media</SelectItem>
-                                                        <SelectItem value="Alta">Alta</SelectItem>
-                                                    </SelectContent>
-                                                </Select>
+                                                <HelpTooltip field="confidentiality" />
                                             </div>
-                                        </CollapsibleContent>
-                                    </Collapsible>
+                                            <Select 
+                                                value={formData.confidentiality} 
+                                                onValueChange={(value) => setFormData({...formData, confidentiality: value})}
+                                            >
+                                                <SelectTrigger data-testid="task-confidentiality-select">
+                                                    <SelectValue placeholder="Selecciona" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="Baja">Baja - Info pública o sin impacto</SelectItem>
+                                                    <SelectItem value="Media">Media - Datos internos no críticos</SelectItem>
+                                                    <SelectItem value="Alta">Alta - Datos personales, financieros o estratégicos</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                    </div>
 
                                     <DialogFooter>
                                         <DialogClose asChild>
@@ -454,9 +653,9 @@ const Dashboard = () => {
                                         <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Tarea</th>
                                         <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Frecuencia</th>
                                         <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Duración</th>
-                                        <th className="px-4 py-3 text-center text-sm font-medium text-muted-foreground">I</th>
-                                        <th className="px-4 py-3 text-center text-sm font-medium text-muted-foreground">R</th>
-                                        <th className="px-4 py-3 text-center text-sm font-medium text-muted-foreground">E</th>
+                                        <th className="px-4 py-3 text-center text-sm font-medium text-muted-foreground">Impacto</th>
+                                        <th className="px-4 py-3 text-center text-sm font-medium text-muted-foreground">Riesgo</th>
+                                        <th className="px-4 py-3 text-center text-sm font-medium text-muted-foreground">Esfuerzo</th>
                                         <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Conf.</th>
                                         <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Decisión</th>
                                         <th className="px-4 py-3 text-right text-sm font-medium text-muted-foreground">Acciones</th>
