@@ -29,7 +29,7 @@ const Landing = () => {
                             ¿Hasta cuándo vas a sostener una empresa sin roles claros ni procesos definidos?
                         </h2>
                         <p className="text-lg text-primary font-medium">
-                            Profesionaliza tu operación con SmartTasks, el sistema que ordena roles, procesos y delegación en 90 días.
+                            Profesionaliza tu operación con SmartTasks, el sistema que ordena roles, procesos y delegación.
                         </p>
                         <p className="text-muted-foreground">
                             <span className="font-medium text-foreground">Reduce tu dependencia</span> operativa del día a día · 
@@ -39,7 +39,7 @@ const Landing = () => {
                         <div className="flex flex-col sm:flex-row gap-4">
                             <Link to="/register">
                                 <Button size="lg" className="w-full sm:w-auto text-base px-8" data-testid="hero-cta-btn">
-                                    Hacer autodiagnóstico operativo gratuito
+                                    Comenzar ahora - Es gratis
                                     <ArrowRight className="ml-2 h-5 w-5" />
                                 </Button>
                             </Link>
@@ -162,7 +162,7 @@ const Landing = () => {
                         Empieza tu diagnóstico operativo hoy
                     </h3>
                     <p className="text-lg text-muted mb-8 opacity-80">
-                        En menos de 15 minutos tendrás claridad sobre qué conservar, delegar, automatizar o eliminar.
+                        Identifica qué tareas conservar, delegar, automatizar o eliminar con ayuda de inteligencia artificial.
                     </p>
                     <Link to="/register">
                         <Button size="lg" variant="secondary" className="text-base px-8" data-testid="footer-cta-btn">
