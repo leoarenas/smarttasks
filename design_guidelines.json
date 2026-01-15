@@ -1,0 +1,171 @@
+{
+  "design_system": {
+    "identity": {
+      "name": "E1: The Anti-AI Designer",
+      "core_philosophy": "Fusion over Imitation. Emotion First. Content is King.",
+      "anti_patterns": [
+        "Purple/Teal gradients",
+        "Inter font everywhere",
+        "Centered layouts",
+        "Low contrast gray text"
+      ]
+    },
+    "theme": {
+      "mode": "light",
+      "strategy": "Swiss Productivity",
+      "description": "High contrast, bold black typography on white, with electric magenta accents. Serious but energetic."
+    },
+    "typography": {
+      "headings": {
+        "font_family": "Clash Display, sans-serif",
+        "weights": ["600", "700"],
+        "cdn_import": "https://api.fontshare.com/v2/css?f[]=clash-display@600,700&display=swap",
+        "usage": "All H1-H3 headings. Use tight tracking (-0.02em)."
+      },
+      "body": {
+        "font_family": "DM Sans, sans-serif",
+        "weights": ["400", "500", "700"],
+        "cdn_import": "https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;500;700&display=swap",
+        "usage": "Body text, UI labels, buttons."
+      }
+    },
+    "colors": {
+      "palette": {
+        "primary": {
+          "hex": "#E91E8C",
+          "tailwind_var": "328 83% 52%",
+          "usage": "Primary CTAs, Active States, Brand Accents"
+        },
+        "background": {
+          "hex": "#FFFFFF",
+          "tailwind_var": "0 0% 100%",
+          "usage": "Main background"
+        },
+        "surface": {
+          "hex": "#F8F9FA",
+          "tailwind_var": "210 20% 98%",
+          "usage": "Card backgrounds, Sidebar"
+        },
+        "foreground": {
+          "hex": "#0A0A0A",
+          "tailwind_var": "0 0% 4%",
+          "usage": "Headings, Main Text"
+        },
+        "muted": {
+          "hex": "#71717A",
+          "tailwind_var": "240 4% 46%",
+          "usage": "Secondary text, descriptions"
+        },
+        "border": {
+          "hex": "#E4E4E7",
+          "tailwind_var": "240 6% 90%",
+          "usage": "Borders, Dividers"
+        }
+      },
+      "status": {
+        "keep": "#EAB308",
+        "delegate": "#22C55E",
+        "automate": "#3B82F6",
+        "eliminate": "#EF4444"
+      }
+    },
+    "spacing": {
+      "scale": "Generous",
+      "base_unit": "4px",
+      "container_padding": "p-6 md:p-12",
+      "section_gap": "gap-12 md:gap-24"
+    },
+    "radius": {
+      "default": "0.25rem",
+      "buttons": "0px",
+      "cards": "0.25rem"
+    },
+    "shadows": {
+      "card": "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
+      "hover": "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)"
+    }
+  },
+  "components": {
+    "buttons": {
+      "style": "Sharp or slightly rounded (rounded-sm). High contrast.",
+      "primary": "bg-primary text-white hover:bg-primary/90 shadow-sm",
+      "secondary": "bg-white text-foreground border border-input hover:bg-accent hover:text-accent-foreground",
+      "ghost": "hover:bg-accent hover:text-accent-foreground"
+    },
+    "cards": {
+      "style": "Flat with subtle border. No massive shadows.",
+      "classes": "bg-card text-card-foreground border border-border shadow-sm rounded-sm"
+    },
+    "inputs": {
+      "style": "Minimalist, sharp edges.",
+      "classes": "flex h-9 w-full rounded-sm border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+    },
+    "badges": {
+      "style": "Pill shaped or squared, solid colors for status.",
+      "keep": "bg-yellow-100 text-yellow-800 border-yellow-200",
+      "delegate": "bg-green-100 text-green-800 border-green-200",
+      "automate": "bg-blue-100 text-blue-800 border-blue-200",
+      "eliminate": "bg-red-100 text-red-800 border-red-200"
+    }
+  },
+  "layout_strategies": {
+    "landing_page": {
+      "grid_mode": "Mode A: Tetris Grid",
+      "description": "Asymmetric layout. Large typography. High contrast sections.",
+      "hero_section": "Split screen or heavy typography left, image right (masked or framed)."
+    },
+    "dashboard": {
+      "grid_mode": "Mode B: High Density",
+      "description": "Dense data grid. Sidebar navigation. Clear hierarchy.",
+      "task_table": "Clean rows, distinct status badges, action menus."
+    }
+  },
+  "assets": {
+    "images": [
+      {
+        "category": "hero_main",
+        "url": "https://images.unsplash.com/photo-1758598306980-c47a94c6708c?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzR8MHwxfHNlYXJjaHwyfHxidXNpbmVzcyUyMG93bmVyJTIwY29uZmlkZW50JTIwb2ZmaWNlfGVufDB8fHx8MTc2ODUwMDA0MHww&ixlib=rb-4.1.0&q=85",
+        "description": "Confident businesswoman with arms crossed. Use for Hero section to imply empowerment and control.",
+        "alt": "Dueña de negocio confiada"
+      },
+      {
+        "category": "feature_delegation",
+        "url": "https://images.unsplash.com/photo-1758691737158-18ffa31c0a46?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxODd8MHwxfHNlYXJjaHwxfHxkaXZlcnNlJTIwYnVzaW5lc3MlMjB0ZWFtJTIwbWVldGluZyUyMG9mZmljZXxlbnwwfHx8fDE3Njg1MDAwNTl8MA&ixlib=rb-4.1.0&q=85",
+        "description": "Diverse team working together on laptop. Use for 'Delegation' or 'Team' feature section.",
+        "alt": "Equipo trabajando juntos"
+      },
+      {
+        "category": "feature_analysis",
+        "url": "https://images.unsplash.com/photo-1758519290890-46b542bb25fd?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzR8MHwxfHNlYXJjaHwzfHxidXNpbmVzcyUyMG93bmVyJTIwY29uZmlkZW50JTIwb2ZmaWNlfGVufDB8fHx8MTc2ODUwMDA0MHww&ixlib=rb-4.1.0&q=85",
+        "description": "Businessman in cafe working. Use for 'Freedom/Lifestyle' benefit or Analysis section.",
+        "alt": "Empresario trabajando remotamente"
+      }
+    ],
+    "icons": {
+      "library": "lucide-react",
+      "style": "Stroke width 1.5px or 2px. Sharp joins if possible."
+    }
+  },
+  "instructions_to_main_agent": {
+    "setup": [
+      "Update tailwind.config.js with the new color palette and font families.",
+      "Import fonts in index.css or index.html.",
+      "Set default border radius to 0.25rem (rounded-sm)."
+    ],
+    "implementation_rules": [
+      "Use 'Clash Display' for all Headings (h1-h3).",
+      "Use 'DM Sans' for all body text.",
+      "Ensure the Primary Color (#E91E8C) is used for primary actions ONLY. Do not overuse.",
+      "Maintain strict Light Mode. Do not implement Dark Mode toggles unless requested.",
+      "Use the 'Bento Grid' layout for the Dashboard.",
+      "Ensure all text has high contrast (APCA compliant).",
+      "Add 'data-testid' to all interactive elements."
+    ],
+    "universal_guidelines": [
+      "Avoid generic centered layouts.",
+      "Use 2-3x more spacing than typical.",
+      "Micro-animations on all interactions (hover, focus, active).",
+      "No 'AI slop' aesthetics (generic gradients, rounded everything)."
+    ]
+  }
+}
