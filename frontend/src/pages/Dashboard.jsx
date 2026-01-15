@@ -114,19 +114,21 @@ const HelpTooltip = ({ field }) => {
                         <HelpCircle className="h-4 w-4" />
                     </button>
                 </TooltipTrigger>
-                <TooltipContent side="right" className="max-w-sm p-4">
-                    <div className="space-y-2">
-                        <p className="font-semibold">{help.title}</p>
-                        <p className="text-sm text-muted-foreground">{help.description}</p>
-                        <div className="space-y-1 text-xs">
+                <TooltipContent side="right" className="max-w-xs p-4 bg-white border border-border shadow-lg">
+                    <div className="space-y-3 text-foreground">
+                        <p className="font-semibold text-sm text-foreground">{help.title}</p>
+                        <p className="text-xs text-foreground leading-relaxed">{help.description}</p>
+                        <div className="space-y-2 text-xs">
                             {help.levels.map((level, i) => (
-                                <div key={i} className="flex gap-2">
-                                    <span className="font-medium text-primary">{level.value}:</span>
-                                    <span>{level.desc}</span>
+                                <div key={i} className="flex flex-col">
+                                    <span className="font-semibold text-primary">{level.value}: {level.label}</span>
+                                    <span className="text-foreground pl-2">{level.desc}</span>
                                 </div>
                             ))}
                         </div>
-                        <p className="text-xs font-medium text-primary mt-2">Regla: {help.rule}</p>
+                        <div className="pt-2 border-t border-border">
+                            <p className="text-xs text-foreground"><span className="font-semibold">Regla:</span> {help.rule}</p>
+                        </div>
                     </div>
                 </TooltipContent>
             </Tooltip>
